@@ -1,22 +1,10 @@
 """
-========================================================
 COM6020M - Privacy and Data Protection
 Appendix: Algorithm Transparency in Automated Decision-Making
-========================================================
 
 This script demonstrates algorithm transparency techniques
 applied to a simulated loan approval ADM system.
 
-It addresses the privacy challenge identified in Section 2.1
-(The Black Box Problem) by using a Decision Tree classifier —
-an inherently interpretable model — and applying feature
-importance analysis to explain how decisions are reached.
-
-Techniques demonstrated:
-  1. Decision Tree model (inherently interpretable)
-  2. Feature importance analysis
-  3. Per-decision explanation (counterfactual-style)
-  4. Visualisation of decision rules
 """
 
 import numpy as np
@@ -28,12 +16,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, accuracy_score
 from sklearn.inspection import permutation_importance
 
-# ─────────────────────────────────────────────────────────
+
 # STEP 1 — Simulate a loan application dataset
-# ─────────────────────────────────────────────────────────
-# This simulates the kind of personal data an ADM system
-# would collect and process — raising the consent and
-# data minimisation concerns discussed in Section 2.2.
 
 np.random.seed(42)
 n_samples = 500
@@ -69,12 +53,9 @@ print(f"\nDataset: {len(df)} loan applications")
 print(f"Approved: {df['approved'].sum()} ({df['approved'].mean()*100:.1f}%)")
 print(f"Rejected: {(1-df['approved']).sum()} ({(1-df['approved']).mean()*100:.1f}%)")
 
-# ─────────────────────────────────────────────────────────
+
 # STEP 2 — Train an interpretable Decision Tree model
-# ─────────────────────────────────────────────────────────
-# A Decision Tree is chosen deliberately for transparency.
-# Unlike deep learning models (the "black box" problem
-# in Section 2.1), every decision path is human-readable.
+
 
 features = ['age', 'annual_income', 'credit_score',
             'employment_years', 'existing_debt', 'loan_amount']
@@ -99,13 +80,9 @@ print("\nClassification Report:")
 print(classification_report(y_test, y_pred,
       target_names=['Rejected', 'Approved']))
 
-# ─────────────────────────────────────────────────────────
+
 # STEP 3 — Feature Importance Analysis (XAI)
-# ─────────────────────────────────────────────────────────
-# This directly addresses Section 3.1 (Explainable AI).
-# Feature importance reveals WHICH personal attributes
-# drive decisions — helping identify potential privacy
-# violations and discriminatory patterns.
+
 
 importances = model.feature_importances_
 importance_df = pd.DataFrame({
@@ -126,9 +103,9 @@ print(f"  with protected characteristics (e.g. ethnicity, health),")
 print(f"  the model may perpetuate discriminatory outcomes —")
 print(f"  a core concern of inferential profiling (Section 2.3).")
 
-# ─────────────────────────────────────────────────────────
+
 # STEP 4 — Per-Decision Explanation
-# ─────────────────────────────────────────────────────────
+
 # This demonstrates what a 'right to explanation' (GDPR
 # Article 22) would look like in practice — showing an
 # individual exactly why their application was decided.
@@ -177,9 +154,9 @@ for i, name in enumerate(applicant_names):
             print(f"    - {feat_name}: {value:,} ({direction} threshold of {threshold:,.0f})")
             seen.add(feat_i)
 
-# ─────────────────────────────────────────────────────────
+
 # STEP 5 — Visualisations
-# ─────────────────────────────────────────────────────────
+
 
 fig, axes = plt.subplots(1, 2, figsize=(16, 7))
 fig.suptitle(
@@ -248,25 +225,6 @@ print(f"\n{'─'*60}")
 print("  Privacy Risk Assessment Summary")
 print(f"{'─'*60}")
 print("""
-  This demonstration highlights three key privacy concerns:
 
-  1. DATA MINIMISATION (Section 2.2 / GDPR Article 5)
-     The model uses 6 personal attributes. A privacy-
-     preserving deployment should assess whether all 6
-     are strictly necessary — or whether fewer features
-     achieve acceptable accuracy.
-
-  2. TRANSPARENCY (Section 2.1 / GDPR Article 22)
-     The Decision Tree provides human-readable decision
-     paths. This is the principle behind XAI — individuals
-     can see exactly which threshold triggered their outcome.
-
-  3. INFERENTIAL RISK (Section 2.3)
-     If 'credit_score' correlates with protected attributes
-     such as ethnicity or postcode, the model may indirectly
-     discriminate — even without using those attributes
-     explicitly. Algorithmic auditing (Recommendation 1)
-     is essential to detect this.
-""")
 print("  Script complete.")
 print("=" * 60)
