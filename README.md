@@ -32,7 +32,7 @@ Install dependencies:
 pip install scikit-learn matplotlib pandas numpy
 
 Run the script:
-algorithm_transparency.py
+python algorithm_transparency.py
 
 ---
 
